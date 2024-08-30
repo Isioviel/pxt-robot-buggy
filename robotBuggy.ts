@@ -135,9 +135,8 @@ namespace robotBuggy {
     //% block="start left motor at speed %valueLeft start right motor at speed %valueRight"
     //% valueLeft.min=-1023 valueLeft.max=1023 valueLeft.defl=600
     //% valueRight.min=-1023 valueRight.max=1023 valueRight.defl=600
-    //% duration.shadow=timePicker
     //% advanced=true
-    export function movementNoStop(valueLeft: number, valueRight: number, duration: number) {
+    export function movementNoStop(valueLeft: number, valueRight: number) {
         if (valueLeft >= 0) {
             pins.analogWritePin(LF, Math.abs(valueLeft))
         } else if (valueLeft < 0) {
