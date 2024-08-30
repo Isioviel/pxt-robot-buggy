@@ -46,19 +46,6 @@ let RB = 114;
 
 //% weight=100 color=#c1d72e icon="\uf140"
 namespace robotBuggy {
-    
-    /**
-     * Stop your robot's motors
-     */
-    //% block="stop robot motors"
-    //% advanced=true
-    export function stopRobot() {
-        pins.analogWritePin(LF, 0)
-        pins.analogWritePin(LB, 0)
-        pins.analogWritePin(RF, 0)
-        pins.analogWritePin(RB, 0)
-    }
-
     /**
      * Set up which pins the motor driver is connected to
      * @param lf sets pin value for left motor forwards e.g. Pin.p13
@@ -78,10 +65,44 @@ namespace robotBuggy {
     }
 
     /**
+     * Stop your robot's motors
+     */
+    //% block="stop robot motors"
+    //% advanced=true
+    export function stopRobot() {
+        pins.analogWritePin(LF, 0)
+        pins.analogWritePin(LB, 0)
+        pins.analogWritePin(RF, 0)
+        pins.analogWritePin(RB, 0)
+    }
+
+    /**
      * Sets up your robot to the default settings
      */
     //% block="activate robot"
     export function activateRobot() {
+        stopRobot()
+    }
+
+
+    /**
+     * Turn your robot for a set amount of time
+     * @param turn choose a direction, eg: left
+     * @param value choose a speed, eg: medium
+     * @param duration choose how long the motor runs for in ms, eg: 1000
+     */
+    //% block="turn %direction at speed %value for duration %duration"
+    //% value.defl=medium
+    //% duration.shadow=timePicker
+    export function turn(direction: Tur, value: Speed, duration: number) {
+        if (direction == Tur.left) {
+            pins.analogWritePin(LB, Math.abs(value))
+            pins.analogWritePin(RF, Math.abs(value))
+        } else if (direction == Tur.right) {
+            pins.analogWritePin(LF, Math.abs(value))
+            pins.analogWritePin(RB, Math.abs(value))
+        }
+        basic.pause(duration)
         stopRobot()
     }
     
@@ -91,7 +112,7 @@ namespace robotBuggy {
      * @param value choose a speed, eg: medium
      * @param duration choose how long the motor runs for in ms, eg: 1000
      */
-    //% block="set move %direction at speed %value for duration %duration"
+    //% block="move %direction at speed %value for duration %duration"
     //% value.defl=medium
     //% duration.shadow=timePicker
     export function movement(direction: Dir, value: Speed, duration: number) {
@@ -107,69 +128,38 @@ namespace robotBuggy {
     }
 
     /**
-     * Turn your robot for a set amount of time
-     * @param turn choose a direction, eg: left
-     * @param value choose a speed, eg: medium
-     * @param duration choose how long the motor runs for in ms, eg: 1000
+     * Turn your motors on - for use with a controller
+     * @param valueLeft choose a speed, eg: 600
+     * @param valueRight choose a speed, eg: 600
      */
-    //% block="set turn %direction at speed %value for duration %duration"
-    //% value.defl=medium
-    //% duration.shadow=timePicker
-    export function turn(direction: Tur, value: Speed, duration: number) {
-        if (direction == Tur.left) {
-            pins.analogWritePin(LB, Math.abs(value))
-            pins.analogWritePin(RF, Math.abs(value))
-        } else if (direction == Tur.right) {
-            pins.analogWritePin(LF, Math.abs(value))
-            pins.analogWritePin(RB, Math.abs(value))
-        }
-        basic.pause(duration)
-        stopRobot()
-    }
-
-    /**
-     * Control your robot's motors
-     * @param motor choose a motor, eg: left
-     * @param value choose a speed, eg: 750
-     * @param duration choose how long the motor runs for in ms, eg: 1000
-     * @param image choose which icon to display whilst moving, eg: duck
-     */
-    //% block="set motor %motor at speed %value for duration %duration with image %image"
-    //% value.min=-1023 value.max=1023 value.defl=750
+    //% block="start left motor at speed %valueLeft start right motor at speed %valueRight"
+    //% valueLeft.min=-1023 valueLeft.max=1023 valueLeft.defl=600
+    //% valueRight.min=-1023 valueRight.max=1023 valueRight.defl=600
     //% duration.shadow=timePicker
     //% advanced=true
-    export function movementAdvanced(motor: Motors, value: number, duration: number, image: IconNames) {
-        images.iconImage(image).showImage(0)
-        if (motor == Motors.left && value > 0) {
-            pins.analogWritePin(LF, Math.abs(value))
-        } else if (motor == Motors.left && value < 0) {
-            pins.analogWritePin(LB, Math.abs(value))
-        } else if (motor == Motors.right && value > 0) {
-            pins.analogWritePin(RF, Math.abs(value))
-        } else if (motor == Motors.right && value < 0) {
-            pins.analogWritePin(RB, Math.abs(value))
-        } else if (motor == Motors.both && value > 0) {
-            pins.analogWritePin(LF, Math.abs(value))
-            pins.analogWritePin(RF, Math.abs(value))
-        } else if (motor == Motors.both && value < 0) {
-            pins.analogWritePin(LB, Math.abs(value))
-            pins.analogWritePin(RB, Math.abs(value))
+    export function movementNoStop(valueLeft: number, valueRight: number, duration: number) {
+        if (valueLeft >= 0) {
+            pins.analogWritePin(LF, Math.abs(valueLeft))
+        } else if (valueLeft < 0) {
+            pins.analogWritePin(LB, Math.abs(valueLeft))
         }
-        basic.pause(duration)
-        stopRobot()
-        basic.clearScreen()
+        if (valueRight >= 0) {
+            pins.analogWritePin(RF, Math.abs(valueRight))
+        } else if (valueRight < 0) {
+            pins.analogWritePin(RB, Math.abs(valueRight))
+        }
     }
 
     /**
      * Control your robot's motors independently
-     * @param valueLeft choose a speed, eg: 750
-     * @param valueRight choose a speed, eg: 750
+     * @param valueLeft choose a speed, eg: 600
+     * @param valueRight choose a speed, eg: 600
      * @param duration choose how long the motors run for in ms, eg: 1000
      * @param image choose which icon to display whilst moving, eg: duck
      */
     //% block="set left at speed %valueLeft set right at speed %valueRight for duration %duration with image %image"
-    //% valueLeft.min=-1023 valueLeft.max=1023 valueLeft.defl=750
-    //% valueRight.min=-1023 valueRight.max=1023 valueRight.defl=750
+    //% valueLeft.min=-1023 valueLeft.max=1023 valueLeft.defl=600
+    //% valueRight.min=-1023 valueRight.max=1023 valueRight.defl=600
     //% duration.shadow=timePicker
     //% advanced=true
     export function movementIndependent(valueLeft: number, valueRight: number, duration: number, image: IconNames) {
@@ -191,13 +181,13 @@ namespace robotBuggy {
 
     /**
      * Control your robot's motors independently - without images
-     * @param valueLeft choose a speed, eg: 750
-     * @param valueRight choose a speed, eg: 750
+     * @param valueLeft choose a speed, eg: 600
+     * @param valueRight choose a speed, eg: 600
      * @param duration choose how long the motors run for in ms, eg: 1000
      */
     //% block="set left at speed %valueLeft set right at speed %valueRight for duration %duration"
-    //% valueLeft.min=-1023 valueLeft.max=1023 valueLeft.defl=750
-    //% valueRight.min=-1023 valueRight.max=1023 valueRight.defl=750
+    //% valueLeft.min=-1023 valueLeft.max=1023 valueLeft.defl=600
+    //% valueRight.min=-1023 valueRight.max=1023 valueRight.defl=600
     //% duration.shadow=timePicker
     //% advanced=true
     export function movementIndependentBlank(valueLeft: number, valueRight: number, duration: number) {
