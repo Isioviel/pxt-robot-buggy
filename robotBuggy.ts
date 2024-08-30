@@ -6,15 +6,18 @@
 
 enum Dir {
     forward,
-    backward,
+    backward
+}
+
+enum Tur {
     left,
     right
 }
 
 enum Speed {
-    slow = 500,
-    medium = 750,
-    fast = 1000
+    slow = 300,
+    medium = 600,
+    fast = 800
 }
 
 enum Pin {
@@ -84,11 +87,11 @@ namespace robotBuggy {
     
     /**
      * Move your robot for a set amount of time
-     * @param direction choose a direction, eg: forward
+     * @param move choose a direction, eg: forward
      * @param value choose a speed, eg: medium
      * @param duration choose how long the motor runs for in ms, eg: 1000
      */
-    //% block="set direction %direction at speed %value for duration %duration"
+    //% block="set move %direction at speed %value for duration %duration"
     //% value.defl=medium
     //% duration.shadow=timePicker
     export function movement(direction: Dir, value: Speed, duration: number) {
@@ -98,10 +101,25 @@ namespace robotBuggy {
         } else if (direction == Dir.backward) {
             pins.analogWritePin(LB, Math.abs(value))
             pins.analogWritePin(RB, Math.abs(value))
-        } else if (direction == Dir.left) {
+        }
+        basic.pause(duration)
+        stopRobot()
+    }
+
+    /**
+     * Turn your robot for a set amount of time
+     * @param turn choose a direction, eg: left
+     * @param value choose a speed, eg: medium
+     * @param duration choose how long the motor runs for in ms, eg: 1000
+     */
+    //% block="set turn %direction at speed %value for duration %duration"
+    //% value.defl=medium
+    //% duration.shadow=timePicker
+    export function turn(direction: Tur, value: Speed, duration: number) {
+        if (direction == Tur.left) {
             pins.analogWritePin(LB, Math.abs(value))
             pins.analogWritePin(RF, Math.abs(value))
-        } else if (direction == Dir.right) {
+        } else if (direction == Tur.right) {
             pins.analogWritePin(LF, Math.abs(value))
             pins.analogWritePin(RB, Math.abs(value))
         }
