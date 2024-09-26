@@ -136,18 +136,19 @@ namespace robotBuggy {
     //% valueLeft.min=-1023 valueLeft.max=1023 valueLeft.defl=600
     //% valueRight.min=-1023 valueRight.max=1023 valueRight.defl=600
     //% advanced=true
-    export function movementNoStop(valueLeft: number, valueRight: number) {
-        if (valueLeft >= 0) {
-            pins.analogWritePin(LF, Math.abs(valueLeft))
-        } else if (valueLeft < 0) {
-            pins.analogWritePin(LB, Math.abs(valueLeft))
-        }
-        if (valueRight >= 0) {
-            pins.analogWritePin(RF, Math.abs(valueRight))
-        } else if (valueRight < 0) {
-            pins.analogWritePin(RB, Math.abs(valueRight))
-        }
-    }
+    // UNCOMMENT THE BELOW LINES TO ADD THIS FUNCTION IN TO THE EXTENSION
+    //export function movementNoStop(valueLeft: number, valueRight: number) {
+    //    if (valueLeft >= 0) {
+    //        pins.analogWritePin(LF, Math.abs(valueLeft))
+    //    } else if (valueLeft < 0) {
+    //        pins.analogWritePin(LB, Math.abs(valueLeft))
+    //    }
+    //    if (valueRight >= 0) {
+    //        pins.analogWritePin(RF, Math.abs(valueRight))
+    //    } else if (valueRight < 0) {
+    //        pins.analogWritePin(RB, Math.abs(valueRight))
+    //    }
+    //}
 
     /**
      * Control your robot's motors independently
